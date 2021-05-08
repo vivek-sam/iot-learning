@@ -34,14 +34,17 @@
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
 
 DHT dht(DHTPIN, DHTTYPE);
+int i;
 
 void setup() {
 
+  i = 0;
+  
   pinMode(LED_BUILTIN, OUTPUT);
   
   Serial.begin(9600);
   Serial.println(F("DHTxx test!"));
-
+  
   dht.begin();
 }
 
@@ -74,7 +77,8 @@ void loop() {
   // Compute heat index in Celsius (isFahreheit = false)
   float hic = dht.computeHeatIndex(t, h, false);
 
-  Serial.print(F(" Humidity: "));
+  Serial.print(i);
+  Serial.print(F(" - Humidity: "));
   Serial.print(h);
   Serial.print(F("%  Temperature: "));
   Serial.print(t);
@@ -85,4 +89,6 @@ void loop() {
   Serial.print(F("C "));
   Serial.print(hif);
   Serial.println(F("F"));
+
+  i++;
 }
