@@ -32,6 +32,7 @@ float temperatureF = 0;
 float heatindexF = 0;
 float heatindexC = 0;
 bool isthereadhtsensor = true;
+bool validdhtsensordata = false;
 
 // For the dust sensor
 const int measurePin = A0;
@@ -39,6 +40,7 @@ float voMeasured = 0;
 float calcVoltage = 0;
 float dustDensity = 0;  
 bool isthereadustsensor = true;
+bool validdustsensordata = false;
 
 // For the Wifi connection & UDP, need to change this to 
 const char* host     = "espmon";
@@ -107,7 +109,7 @@ void setup() {
   }
 
   if(isthereadustsensor) {
-    if(!readdustsensors() {
+    if(!readdustsensors()) {
       Serial.print("WARNING: No Dust sensor data");
     }
   }
@@ -120,6 +122,7 @@ void setup() {
   timewaited = 0;
 
   if (!isproduction) Serial.print("DEBUG: ");
+
   while (WiFi.status() != WL_CONNECTED && timewaited < maximumwaitingtime) { // Wait for the Wi-Fi to connect
     //put a wait for maximum 1 minute, else, sleep and try again after a while.
     delay(1000);
@@ -133,156 +136,153 @@ void setup() {
     Serial.println("WARNING: No WiFi connection, only displaying the data");
 
     // We have all the sensor data, simply display it...
+    printdhtsensordata();
+    printdustsensordata();
+
+    //Display in the oled before deep sleep.
     
     deepsleepforsometime(60e6);
   }
   
-  int i = 0;
+  IPAddress local = WiFi.localIP();
+  IPAddress mcast(SSDP_MULTICAST_ADDR);  
+
+  Serial.printf("INFO: Connecting to %s, with IP Address ",ssid);
+  Serial.println(local);
+  
+  //wait for 3 seconds
+  waitforsometime(3);
 
 
-  if( i == 60 ) {
-    Serial.println("Unable to connect to the network");
+
+  if (igmp_joingroup(local, mcast) != ERR_OK ) {
+    Serial.println("WARNING: SSDP failed to join igmp group\n");
   } else {
+    //We want to retry 5 times to get the ssdp info, before giving up
+    int retrycount = 0;
+    processed_data = false;
 
-    resetssdpreceivedvalues();
-  
-    Serial.printf("\nConnection status: %d", WiFi.status());
-    Serial.println("\nConnection established!");  
-    Serial.print("IP address: \t");
-    Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
+    while (processed_data == false & retrycount < 5) {
 
-    //START FROM HERE
-    //wait for 3 seconds
-    waitforsometime(3);
-  
-    IPAddress local = WiFi.localIP();
-    IPAddress mcast(SSDP_MULTICAST_ADDR);  
-  
-    _UDPserver = new UdpContext;
-    _UDPserver->ref();
-  
-    if (igmp_joingroup(local, mcast) != ERR_OK ) {  
-        Serial.println("SSDP failed to join igmp group\n");
-    }
-    else {
-        if (!_UDPserver->listen(IP_ADDR_ANY, SSDP_PORT)) {
-          Serial.println("SSDP Listen Failed\n");
-        }
+      resetssdpreceivedvalues();
+      _UDPserver = new UdpContext;
+      _UDPserver->ref();
+
+      if (!_UDPserver->listen(IP_ADDR_ANY, SSDP_PORT)) {
+        Serial.println("WARNING: SSDP Listen Failed\n");
+      } 
+      else {
+        _UDPserver->setMulticastInterface(local);
+        _UDPserver->setMulticastTTL(SSDP_MULTICAST_TTL);
+        _UDPserver->onRx(handleReceive);
+        if (!_UDPserver->connect(mcast, SSDP_PORT)) {
+          Serial.println("WARNING: SSDP Connect Failed\n");
+        } 
         else {
-            _UDPserver->setMulticastInterface(local);
-            _UDPserver->setMulticastTTL(SSDP_MULTICAST_TTL);
-            _UDPserver->onRx(handleReceive);
-            if (!_UDPserver->connect(mcast, SSDP_PORT)) {
-              Serial.println("SSDP Connect Failed\n");
-            }
-            else {
-              char buffer[1460];
-              char valueBuffer[strlen_P(_ssdp_search_template) + 1];
+          char buffer[1460];
+          char valueBuffer[strlen_P(_ssdp_search_template) + 1];
               
-              strcpy_P(valueBuffer, _ssdp_search_template);
+          strcpy_P(valueBuffer, _ssdp_search_template);
     
-              int len = snprintf_P(buffer, sizeof(buffer), _ssdp_search_template);
-  
-              int retrycount = 0;
+          int len = snprintf_P(buffer, sizeof(buffer), _ssdp_search_template);
+
+          Serial.print("INFO: Broadcasting Attempt Count : ");
+          Serial.println(retrycount);
+          Serial.println(buffer);
                 
-              while (processed_data == false & retrycount < 5) {
-                //broadcast to UDP
-                Serial.print("Broadcasting Attempt Count : ");
-                Serial.println(retrycount);
-                Serial.println(buffer);
-                
-                _UDPserver->append(buffer, len);
-                _UDPserver->send(IPAddress(SSDP_MULTICAST_ADDR), SSDP_PORT);
+          _UDPserver->append(buffer, len);
+          _UDPserver->send(IPAddress(SSDP_MULTICAST_ADDR), SSDP_PORT);
     
-                //Wait till you get a response or timeout to 30 seconds.
-                i = 0;
-                received_data = false;
-                while (!received_data && i < 30) {
-                  delay(1000);
-                  Serial.print(++i); Serial.print(' ');
-                }
-                Serial.println(" ");
+          //Wait till you get a response or timeout to 30 seconds.
+          int i = 0;
+          received_data = false;
+          while (!received_data && i < 30) {
+            delay(1000);
+            Serial.print(++i); Serial.print(' ');
+          }
+          Serial.println(" ");
                   
-                if(!received_data) {
-                  Serial.println("Did not receive any data");
-                }
-                else {
-                  ntsval.trim();      
-                  if(ntsval == "rpi-esp-monitor")
-                    processed_data = true;                            
-                }
-                  
-                retrycount++;
-              }
-
-              // Wait for 10 Seconds before moving ahead...
-              waitforsometime(10);
-                
-              //We have everything we need, send the data to the Flask server
-              if(received_data == true && processed_data == true & locationval.length() > 5) {
-                
-                Serial.println("Attempting to Send JSON input");
-                HTTPClient  http;
-                String servername = locationval+"/hereisdata";
-                
-                String httpRequestData = "";
-
-                DynamicJsonDocument doc(1024);
-
-                doc["api_key"] = apiKey;
-                doc["macadd"] = WiFi.macAddress();
-                doc["ipaddr"] = WiFi.localIP();
-                doc["temphumid"]["type"] = DHTTYPE;
-                doc["temphumid"]["tempc"] = temperatureC;
-                doc["temphumid"]["tempf"] = temperatureF;
-                doc["temphumid"]["heatic"] = heatindexC;
-                doc["temphumid"]["heatif"] = heatindexF;
-                doc["temphumid"]["humidity"] = humidity;
-                doc["dustsens"]["type"] = "GP2Y1010AU0F";
-                doc["dustsens"]["vo"] = voMeasured;
-                doc["dustsens"]["calcvo"] = calcVoltage;
-                doc["dustsens"]["ddens"] = dustDensity;
-
-                int data_length = serializeJson(doc, httpRequestData);
-                Serial.println(httpRequestData);
-                
-                Serial.println(servername);
-                http.begin(servername);
-                http.addHeader("Content-Type", "application/json");
-                
-                //String httpRequestData = "{\"api_key\":\"" + apiKey + "\",\"field1\":\"" + String(random(40)) + "\"}";           
-                // Send HTTP POST request
-                int httpResponseCode = http.POST(httpRequestData);
-
-                Serial.print("HTTP Response code: ");
-                Serial.println(httpResponseCode);
-
-                if(httpResponseCode > 0) {
-                  //Get the request response payload
-                  String payload = http.getString();
-                  //Print the response payload
-                  Serial.println(payload);                  
-                }
-        
-                 // Free resources
-                 http.end();                
-              }
-
-              //Wait for 5 seconds before we cleanup and reset
-              waitforsometime(5);
-              
-              igmp_leavegroup(local, mcast);
-              
-              //Cleanup
-              _UDPserver->disconnect();
-              delete _UDPserver;
-              _UDPserver = nullptr;  
-            }
+          if(!received_data) {
+            Serial.println("WARNING: Did not receive any data");
+          }
+          else {     
+            ntsval.trim();      
+            if(ntsval == "rpi-esp-monitor")
+              processed_data = true;                            
+          }
         }
+      }
+      
+      //Cleanup
+      _UDPserver->disconnect();
+      delete _UDPserver;
+      _UDPserver = nullptr;  
+
+      //Wait for 5 seconds before retrying
+      waitforsometime(5);
     }
+
+    igmp_leavegroup(local, mcast);
+  }
+
+  // Wait for 10 Seconds before moving ahead...
+  waitforsometime(10);    
+
+  if(received_data == true && processed_data == true & locationval.length() > 5) {                
+                
+    Serial.println("INFO: Attempting to Send JSON input");
+    HTTPClient  http;
+    String servername = locationval+"/hereisdata";              
+    String httpRequestData = "";
+
+    DynamicJsonDocument doc(1024);
+
+    doc["api_key"] = apiKey;
+    doc["macadd"] = WiFi.macAddress();
+    doc["ipaddr"] = WiFi.localIP();
+    doc["temphumid"]["type"] = DHTTYPE;
+    doc["temphumid"]["tempc"] = temperatureC;
+    doc["temphumid"]["tempf"] = temperatureF;
+    doc["temphumid"]["heatic"] = heatindexC;
+    doc["temphumid"]["heatif"] = heatindexF;
+    doc["temphumid"]["humidity"] = humidity;
+    doc["dustsens"]["type"] = "GP2Y1010AU0F";
+    doc["dustsens"]["vo"] = voMeasured;
+    doc["dustsens"]["calcvo"] = calcVoltage;
+    doc["dustsens"]["ddens"] = dustDensity;
+
+    int data_length = serializeJson(doc, httpRequestData);
+
+    if (!isproduction) Serial.print("DEBUG: Server URL: ");
+    if (!isproduction) Serial.println(servername);
+    if (!isproduction) Serial.println("DEBUG: Sending JSON");
+    if (!isproduction) Serial.println(httpRequestData);             
+      
+    http.begin(servername);
+    http.addHeader("Content-Type", "application/json");
+                
+    // Send HTTP POST request
+    int httpResponseCode = http.POST(httpRequestData);
+
+    Serial.print("INFO: HTTP Response code: ");
+    Serial.println(httpResponseCode);
+
+    if(httpResponseCode > 0) {
+      //Get the request response payload
+      String payload = http.getString();
+      //Print the response payload
+      if (!isproduction) Serial.println("DEBUG: Received JSON");
+      if (!isproduction) Serial.println(payload);                  
+    }
+        
+    // Free resources
+    http.end();                
+  }
+  else {
+    Serial.println("WARNING: Did not receive any server information");
   }
       
-  // Deep sleep mode for 30 seconds, the ESP8266 wakes up by itself when GPIO 16 (D0 in NodeMCU board) is connected to the RESET pin
+  //Deep sleep mode for 30 seconds, the ESP8266 wakes up by itself when GPIO 16 (D0 in NodeMCU board) is connected to the RESET pin
   //Serial.println("Going into deep sleep mode for 30 seconds");
 
   //600e6 for 10 minutes, current 30 seconds
@@ -294,7 +294,7 @@ void setup() {
 
 // Deep Sleeps for a specified amount of time
 void deepsleepforsometime(unsigned long microseconds) {
-  Serial.print("Going into deep sleep mode for ");
+  Serial.print("INFO: Going into deep sleep mode for ");
   Serial.print(microseconds);
   Serial.println(" micro seconds");
   
@@ -318,15 +318,13 @@ void resetssdpreceivedvalues(){
   gotalval = false;
   alval = "";
   extraValues = "";
-  received_data = false;
-  processed_data = false;
 }
 
 /* Function to wait for a number of seconds, doing the delays differently */
 void waitforsometime(int timeinseconds) {
   int waittime = 0;
 
-  Serial.print("Waiting for ");
+  Serial.print("INFO: Waiting for ");
   Serial.print(timeinseconds);
   Serial.println(" seconds...");
   while (waittime < timeinseconds) {
@@ -334,7 +332,27 @@ void waitforsometime(int timeinseconds) {
     Serial.print(++waittime); Serial.print(' ');
   }
 
-  Serial.println("\nContinuing...");
+  Serial.println("\nINFO: Continuing...\n");
+}
+
+// Print the DHT Sensor data
+void printdhtsensordata() {
+  
+  if(validdhtsensordata) {
+    Serial.println("INFO: Temperature & Humidity Sensor");
+    Serial.print("Humidity: ");
+    Serial.print(humidity);
+    Serial.print(", Temperature: ");
+    Serial.print(temperatureC);
+    Serial.print("*C, ");
+    Serial.print(temperatureF);
+    Serial.println("*F");
+    Serial.print("Heat index: ");
+    Serial.print(heatindexC);
+    Serial.print("*C, ");
+    Serial.print(heatindexF);
+    Serial.println("*F");
+  }
 }
 
 //Reads the DHT sensor data and populates the variables
@@ -360,21 +378,29 @@ bool readhtsensors() {
     // Compute heat index in Celsius (isFahreheit = false)
     heatindexC = dht.computeHeatIndex(temperatureC, humidity, false);
 
-    Serial.println("Temperature & Humidity Sensor");
-    Serial.print("Humidity: ");
-    Serial.print(humidity);
-    Serial.print(", Temperature: ");
-    Serial.print(temperatureC);
-    Serial.print("*C, ");
-    Serial.print(temperatureF);
-    Serial.println("*F");
-    Serial.print("Heat index: ");
-    Serial.print(heatindexC);
-    Serial.print("*C, ");
-    Serial.print(heatindexF);
-    Serial.println("*F");
+    // No need to print it while reading the data
+    // printdhtsensordata();
   }
+
+  validdhtsensordata = returnvalue;
+
   return returnvalue;
+}
+
+void printdustsensordata () {
+
+  if(validdustsensordata) {
+    Serial.println("INFO: Dust Sensor");
+    Serial.print("Raw Signal Value (0-1023): ");
+    Serial.print(voMeasured);
+    
+    Serial.print(", Voltage: ");
+    Serial.print(calcVoltage);
+    
+    Serial.print(", Dust Density: ");
+    Serial.println(dustDensity);      
+  }
+
 }
 
 //Reads the DHT sensor data and populates the variables
@@ -391,16 +417,8 @@ bool readdustsensors() {
     dustDensity = 0.00;
   }
 
-  Serial.println("Dust Sensor");
-  Serial.print("Raw Signal Value (0-1023): ");
-  Serial.print(voMeasured);
-  
-  Serial.print(", Voltage: ");
-  Serial.print(calcVoltage);
-  
-  Serial.print(", Dust Density: ");
-  Serial.println(dustDensity);  
-    
+  validdustsensordata = returnvalue;
+
   return returnvalue;
 }
 
@@ -410,9 +428,8 @@ void analyzeBuffer(char * line_buffer) {
 
   if (validNotify == false) {    
     if(mybuffer.startsWith("NOTIFY")) {
-      processed_data = true;
       validNotify = true;
-      Serial.println("Received a NOTIFY response");
+      if (!isproduction) Serial.println("DEBUG: Received a NOTIFY response");
       return;
     }    
   }
@@ -422,8 +439,8 @@ void analyzeBuffer(char * line_buffer) {
       gothostval = true;
       //extract the host val
       hostval = mybuffer.substring(5);
-      Serial.print("Received the hostval: ");
-      Serial.println(hostval);
+      if (!isproduction) Serial.print("DEBUG: Received the hostval: ");
+      if (!isproduction) Serial.println(hostval);
       return;
     }      
   }
@@ -433,8 +450,8 @@ void analyzeBuffer(char * line_buffer) {
       gotntval = true;
       //extract the nt val
       ntval = mybuffer.substring(3);
-      Serial.print("Received the ntval: ");
-      Serial.println(ntval);      
+      if (!isproduction) Serial.print("DEBUG: Received the ntval: ");
+      if (!isproduction) Serial.println(ntval);      
       return;
     }      
   }
@@ -444,8 +461,8 @@ void analyzeBuffer(char * line_buffer) {
       gotntsval = true;
       //extract the nt val
       ntsval = mybuffer.substring(4);
-      Serial.print("Received the ntsval: ");
-      Serial.println(ntsval);      
+      if (!isproduction) Serial.print("DEBUG: Received the ntsval: ");
+      if (!isproduction) Serial.println(ntsval);      
       return;
     }      
   }
@@ -455,8 +472,8 @@ void analyzeBuffer(char * line_buffer) {
       gotusnval = true;
       //extract the nt val
       usnval = mybuffer.substring(4);
-      Serial.print("Received the usnval: ");
-      Serial.println(usnval);
+      if (!isproduction) Serial.print("DEBUG: Received the usnval: ");
+      if (!isproduction) Serial.println(usnval);
       return;
     }      
   }
@@ -466,8 +483,8 @@ void analyzeBuffer(char * line_buffer) {
       gotlocationval = true;
       //extract the nt val
       locationval = mybuffer.substring(9);
-      Serial.print("Received the locationval: ");
-      Serial.println(locationval);
+      if (!isproduction) Serial.print("DEBUG: Received the locationval: ");
+      if (!isproduction) Serial.println(locationval);
       return;
     }      
   }
@@ -477,8 +494,8 @@ void analyzeBuffer(char * line_buffer) {
       gotalval = true;
       //extract the nt val
       alval = mybuffer.substring(3);
-      Serial.print("Received the alval: ");
-      Serial.println(alval);
+      if (!isproduction) Serial.print("DEBUG: Received the alval: ");
+      if (!isproduction) Serial.println(alval);
       return;
     }      
   }
@@ -501,7 +518,8 @@ void handleReceive () {
   while (_UDPserver->getSize() > 0) {
     char c = _UDPserver->read();    
    
-    Serial.print(c);
+    //We dont want to pring it from here
+    //Serial.print(c);
     
     if(c != '\n' && c != '\r') {
       //add to the line buffer
@@ -522,9 +540,15 @@ void handleReceive () {
   }
   
   received_data = true;
-  Serial.print("\n");
+
+  if(extraValues.length()>0) {
+      if (!isproduction) Serial.print("DEBUG: Received the extravalues: ");
+      if (!isproduction) Serial.println(extraValues);   
+  }
+  //Serial.print("\n");
 }
 
+//Loop which continuously runs on the 
 void loop() { 
 
 }
