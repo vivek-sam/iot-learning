@@ -1,10 +1,10 @@
-#include <ESP8266WiFi.h> // Include the Wi-Fi library
-#include <ESP8266SSDP.h> // Include ssdp library
-#include <ESP8266HTTPClient.h> // Include HTTP client library
-#include <ArduinoJson.h> // Include the JSON library
-#include "DHT.h" // Include the Temperature Sensor library
+#include <ESP8266WiFi.h>        // Include the Wi-Fi library
+#include <ESP8266SSDP.h>
+#include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
 
-// Below libraries are required for UDP Support
+#include "DHT.h"
+
 #include "lwip/opt.h"
 #include "lwip/udp.h"
 #include "lwip/inet.h"
@@ -12,52 +12,21 @@
 #include "lwip/mem.h"
 #include "include/UdpContext.h"
 
-// For the Temperature 
 #define DHTPIN 4     // what digital pin the DHT22 is conected to
 #define DHTTYPE DHT22   // there are multiple kinds of DHT sensors
-
-// For the SSDP support 
 #define SSDP_MULTICAST_ADDR 239, 255, 255, 250
 #define SSDP_PORT 1900
 #define SSDP_MULTICAST_TTL 2
 #define SSDP_BUFFER_SIZE 1064
 
-// Initializing the temperature sensor library
 DHT dht(DHTPIN, DHTTYPE);
 
-// For the temperature sensor
-float humidity = 0;
-float temperatureC = 0;
-float temperatureF = 0;
-float heatindexF = 0;
-float heatindexC = 0;
-bool isthereadhtsensor = true;
-
-// For the dust sensor
-const int measurePin = A0;
-float voMeasured = 0;
-float calcVoltage = 0;
-float dustDensity = 0;  
-bool isthereadustsensor = true;
-
-// For the Wifi connection & UDP, need to change this to 
 const char* host     = "espmon";
 const char* ssid     = "vivek_iot";         // The SSID (name) of the Wi-Fi network you want to connect to
 const char* password = "9845159712";     // The password of the Wi-Fi network
-unsigned int udpPort = 1900;
-UdpContext* _UDPserver = nullptr;
-IPAddress udpAddr(239, 255, 255, 250);
-IPAddress subnet;
-static const char _ssdp_search_template[] PROGMEM =
-  "M-SEARCH * HTTP/1.1\r\n"
-  "HOST: 239.255.255.250:1900\r\n"
-  "MAN: \"ssdp:discover\"\r\n"
-  "ST: rpi-esp-monitor\r\n"
-  "MX: 1\r\n"
-  "\r\n";
+const int measurePin = A0;
 
-// For receiving the broadcast data and sending the appropriate respose
-String apiKey = "MY_API_KEY";
+String apiKey = "REPLACE_WITH_YOUR_API_KEY";
 bool validNotify = false;
 bool gothostval = false;
 String hostval = "";
@@ -72,11 +41,22 @@ String locationval = "";
 bool gotalval = false;
 String alval = "";
 String extraValues = "";
+
+IPAddress udpAddr(239, 255, 255, 250);
+IPAddress subnet;
+unsigned int udpPort = 1900;
+UdpContext* _UDPserver = nullptr;
 bool received_data = false;
 bool processed_data = false;
 
-// Set for debugging
-bool isproduction = false;
+static const char _ssdp_search_template[] PROGMEM =
+  "M-SEARCH * HTTP/1.1\r\n"
+  "HOST: 239.255.255.250:1900\r\n"
+  "MAN: \"ssdp:discover\"\r\n"
+  "ST: rpi-esp-monitor\r\n"
+  "MX: 1\r\n"
+  "\r\n";
+  
 
 void setup() {
 
@@ -84,61 +64,27 @@ void setup() {
   dht.begin();
 
   waitforsometime(2);
-
-  if (!isproduction) Serial.println("DEBUG: Waking UP!!!");
   
-  if (!isproduction) Serial.printf("DEBUG: Connection status: %d\n", WiFi.status());
-  if (!isproduction) Serial.printf("DEBUG: Connecting to %s\n", ssid);
+  Serial.println("Waking UP!!!");
+  
+  Serial.printf("Connection status: %d\n", WiFi.status());
+  Serial.printf("Connecting to %s\n", ssid);
   
   // We dont need to reset the hostname
-  if (!isproduction) Serial.printf("DEBUG: Default hostname: %s\n", WiFi.hostname().c_str());
+  Serial.printf("Default hostname: %s\n", WiFi.hostname().c_str());
   WiFi.hostname(host);
-  if (!isproduction) Serial.printf("DEBUG: New hostname: %s\n", WiFi.hostname().c_str());
+  Serial.printf("New hostname: %s\n", WiFi.hostname().c_str());
   
   WiFi.begin(ssid, password);             // Connect to the network
-  Serial.print("INFO: Connecting to ");
+  Serial.print("Connecting to ");
   Serial.print(ssid); Serial.println(" ...");
 
-  //While it is connecting, collect all the sensor data...
-  if(isthereadhtsensor) {
-    if(!readhtsensors()) {
-      Serial.print("WARNING: No DHT sensor data");
-    }    
-  }
-
-  if(isthereadustsensor) {
-    if(!readdustsensors() {
-      Serial.print("WARNING: No Dust sensor data");
-    }
-  }
-
-  int timewaited = 0;
-  int maximumwaitingtime = 0;
-
-  // Try to connect to the WIFI
-  maximumwaitingtime = 60; // Try for a minute
-  timewaited = 0;
-
-  if (!isproduction) Serial.print("DEBUG: ");
-  while (WiFi.status() != WL_CONNECTED && timewaited < maximumwaitingtime) { // Wait for the Wi-Fi to connect
-    //put a wait for maximum 1 minute, else, sleep and try again after a while.
-    delay(1000);
-    if (!isproduction) Serial.print(++timewaited);
-    if (!isproduction) Serial.print(' ');
-  }
-  if (!isproduction) Serial.println("...");
-
-  // Still not connected, then only refresh the data for the display and go back to deep sleep, but only sleep for 60 seconds.
-  if(WiFi.status() != WL_CONNECTED) {
-    Serial.println("WARNING: No WiFi connection, only displaying the data");
-
-    // We have all the sensor data, simply display it...
-    
-    deepsleepforsometime(60e6);
-  }
-  
   int i = 0;
-
+  while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect
+  //put a wait for maximum 1 minute, else, sleep and try again after a while.
+    delay(1000);
+    Serial.print(++i); Serial.print(' ');
+  }
 
   if( i == 60 ) {
     Serial.println("Unable to connect to the network");
@@ -150,8 +96,65 @@ void setup() {
     Serial.println("\nConnection established!");  
     Serial.print("IP address: \t");
     Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
+     
+    // Reading temperature or humidity takes about 250 milliseconds!
+    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    float h = dht.readHumidity();
+    // Read temperature as Celsius (the default)
+    float t = dht.readTemperature();
+    // Read temperature as Fahrenheit (isFahrenheit = true)
+    float f = dht.readTemperature(true);
+    
+    float hif = 0;
+    float hic = 0;
+    
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t) || isnan(f)) {
+      Serial.println("Failed to read from DHT sensor!");
+    } else {
+      // Compute heat index in Fahrenheit (the default)
+      hif = dht.computeHeatIndex(f, h);
+      // Compute heat index in Celsius (isFahreheit = false)
+      hic = dht.computeHeatIndex(t, h, false);
 
-    //START FROM HERE
+      Serial.println("Temperature & Humidity Sensor");
+      Serial.print("Humidity: ");
+      Serial.print(h);
+      Serial.print(", Temperature: ");
+      Serial.print(t);
+      Serial.print("*C, ");
+      Serial.print(f);
+      Serial.println("*F");
+      Serial.print("Heat index: ");
+      Serial.print(hic);
+      Serial.print("*C, ");
+      Serial.print(hif);
+      Serial.println("*F");
+    }
+
+    float voMeasured = 0;
+    float calcVoltage = 0;
+    float dustDensity = 0;  
+  
+    //read the dust sensor signal
+    voMeasured = analogRead(measurePin);
+    calcVoltage = voMeasured*(5.0/1024);
+    dustDensity = 0.17*calcVoltage-0.1;
+  
+    if ( dustDensity < 0) {
+      dustDensity = 0.00;
+    }
+
+    Serial.println("Dust Sensor");
+    Serial.print("Raw Signal Value (0-1023): ");
+    Serial.print(voMeasured);
+  
+    Serial.print(", Voltage: ");
+    Serial.print(calcVoltage);
+  
+    Serial.print(", Dust Density: ");
+    Serial.println(dustDensity);  
+
     //wait for 3 seconds
     waitforsometime(3);
   
@@ -233,11 +236,11 @@ void setup() {
                 doc["macadd"] = WiFi.macAddress();
                 doc["ipaddr"] = WiFi.localIP();
                 doc["temphumid"]["type"] = DHTTYPE;
-                doc["temphumid"]["tempc"] = temperatureC;
-                doc["temphumid"]["tempf"] = temperatureF;
-                doc["temphumid"]["heatic"] = heatindexC;
-                doc["temphumid"]["heatif"] = heatindexF;
-                doc["temphumid"]["humidity"] = humidity;
+                doc["temphumid"]["tempc"] = t;
+                doc["temphumid"]["tempf"] = f;
+                doc["temphumid"]["heatic"] = hic;
+                doc["temphumid"]["heatif"] = hif;
+                doc["temphumid"]["humidity"] = h;
                 doc["dustsens"]["type"] = "GP2Y1010AU0F";
                 doc["dustsens"]["vo"] = voMeasured;
                 doc["dustsens"]["calcvo"] = calcVoltage;
@@ -283,22 +286,11 @@ void setup() {
   }
       
   // Deep sleep mode for 30 seconds, the ESP8266 wakes up by itself when GPIO 16 (D0 in NodeMCU board) is connected to the RESET pin
-  //Serial.println("Going into deep sleep mode for 30 seconds");
+  Serial.println("Going into deep sleep mode for 30 seconds");
 
   //600e6 for 10 minutes, current 30 seconds
-  //ESP.deepSleep(30e6); 
-
-  deepsleepforsometime(30e6);
+  ESP.deepSleep(30e6); 
   
-}
-
-// Deep Sleeps for a specified amount of time
-void deepsleepforsometime(unsigned long microseconds) {
-  Serial.print("Going into deep sleep mode for ");
-  Serial.print(microseconds);
-  Serial.println(" micro seconds");
-  
-  ESP.deepSleep(microseconds);
 }
 
 void resetssdpreceivedvalues(){
@@ -335,73 +327,6 @@ void waitforsometime(int timeinseconds) {
   }
 
   Serial.println("\nContinuing...");
-}
-
-//Reads the DHT sensor data and populates the variables
-bool readhtsensors() {
-
-  bool returnvalue = false;
-  
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  humidity = dht.readHumidity();
-  // Read temperature as Celsius (the default)
-  temperatureC = dht.readTemperature();
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  temperatureF = dht.readTemperature(true);
-      
-  // Check if any reads failed and exit early (to try again).
-  if (isnan(humidity) || isnan(temperatureC) || isnan(temperatureF)) {
-    Serial.println("Failed to read from DHT sensor!");
-  } else {
-    returnvalue = true;
-    // Compute heat index in Fahrenheit (the default)
-    heatindexF = dht.computeHeatIndex(temperatureF, humidity);
-    // Compute heat index in Celsius (isFahreheit = false)
-    heatindexC = dht.computeHeatIndex(temperatureC, humidity, false);
-
-    Serial.println("Temperature & Humidity Sensor");
-    Serial.print("Humidity: ");
-    Serial.print(humidity);
-    Serial.print(", Temperature: ");
-    Serial.print(temperatureC);
-    Serial.print("*C, ");
-    Serial.print(temperatureF);
-    Serial.println("*F");
-    Serial.print("Heat index: ");
-    Serial.print(heatindexC);
-    Serial.print("*C, ");
-    Serial.print(heatindexF);
-    Serial.println("*F");
-  }
-  return returnvalue;
-}
-
-//Reads the DHT sensor data and populates the variables
-bool readdustsensors() {
-
-  bool returnvalue = true;
-  
-  //read the dust sensor signal
-  voMeasured = analogRead(measurePin);
-  calcVoltage = voMeasured*(5.0/1024);
-  dustDensity = 0.17*calcVoltage-0.1;
-  
-  if ( dustDensity < 0) {
-    dustDensity = 0.00;
-  }
-
-  Serial.println("Dust Sensor");
-  Serial.print("Raw Signal Value (0-1023): ");
-  Serial.print(voMeasured);
-  
-  Serial.print(", Voltage: ");
-  Serial.print(calcVoltage);
-  
-  Serial.print(", Dust Density: ");
-  Serial.println(dustDensity);  
-    
-  return returnvalue;
 }
 
 void analyzeBuffer(char * line_buffer) {
