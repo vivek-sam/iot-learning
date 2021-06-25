@@ -1,5 +1,6 @@
 import _thread
 from ssdpy import SSDPServer
+from sys import platform
 import signal
 import sys
 import asyncio 
@@ -31,7 +32,11 @@ def run_apiserver(threadname='APIServer'):
     """
     print("Starting ",threadname)
     
-    proc = subprocess.Popen(["D:/Vivek/Google Drive/Projects/iot/iot-learning/raspberrypi/runFlask.cmd",str(flash_port)])
+    if platform == "linux" or platform == "linux2":
+        proc = subprocess.Popen(["/home/vivek/Development/iot-learning/raspberrypi/runFlask.sh",str(flash_port)])
+    elif platform =="win32":
+        proc = subprocess.Popen(["D:/Vivek/Google Drive/Projects/iot/iot-learning/raspberrypi/runFlask.cmd",str(flash_port)])        
+
     exit_code=proc.wait()
     print(exit_code)
 

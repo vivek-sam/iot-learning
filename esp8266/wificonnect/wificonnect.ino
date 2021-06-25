@@ -206,8 +206,8 @@ void setup() {
             Serial.println("WARNING: Did not receive any data");
           }
           else {     
-            ntsval.trim();      
-            if(ntsval == "rpi-esp-monitor")
+            ntval.trim();      
+            if(ntval == "rpi-esp-monitor")
               processed_data = true;                            
           }
         }
@@ -218,6 +218,7 @@ void setup() {
       delete _UDPserver;
       _UDPserver = nullptr;  
 
+      retrycount++;
       //Wait for 5 seconds before retrying
       waitforsometime(5);
     }
@@ -240,16 +241,21 @@ void setup() {
     doc["api_key"] = apiKey;
     doc["macadd"] = WiFi.macAddress();
     doc["ipaddr"] = WiFi.localIP();
-    doc["temphumid"]["type"] = DHTTYPE;
-    doc["temphumid"]["tempc"] = temperatureC;
-    doc["temphumid"]["tempf"] = temperatureF;
-    doc["temphumid"]["heatic"] = heatindexC;
-    doc["temphumid"]["heatif"] = heatindexF;
-    doc["temphumid"]["humidity"] = humidity;
-    doc["dustsens"]["type"] = "GP2Y1010AU0F";
-    doc["dustsens"]["vo"] = voMeasured;
-    doc["dustsens"]["calcvo"] = calcVoltage;
-    doc["dustsens"]["ddens"] = dustDensity;
+
+    if(validdhtsensordata == true) {
+      doc["temphumid"]["type"] = DHTTYPE;
+      doc["temphumid"]["tempc"] = temperatureC;
+      doc["temphumid"]["tempf"] = temperatureF;
+      doc["temphumid"]["heatic"] = heatindexC;
+      doc["temphumid"]["heatif"] = heatindexF;
+      doc["temphumid"]["humidity"] = humidity;
+    }
+    if(validdustsensordata == true) {
+      doc["dustsens"]["type"] = "GP2Y1010AU0F";
+      doc["dustsens"]["vo"] = voMeasured;
+      doc["dustsens"]["calcvo"] = calcVoltage;
+      doc["dustsens"]["ddens"] = dustDensity;
+    }
 
     int data_length = serializeJson(doc, httpRequestData);
 
@@ -288,7 +294,8 @@ void setup() {
   //600e6 for 10 minutes, current 30 seconds
   //ESP.deepSleep(30e6); 
 
-  deepsleepforsometime(30e6);
+  //5 Minute sleep
+  deepsleepforsometime(300e6);
   
 }
 
