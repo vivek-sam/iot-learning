@@ -3,3 +3,5 @@ desktop.ini
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/settings.json
+raspberrypi/__pycache__/EspCollector.cpython-39.pyc
+raspberrypi/outputfile.txt
