@@ -2,10 +2,5 @@ desktop.ini
 .vscode/arduino.json
 .vscode/c_cpp_properties.json
 .vscode/launch.json
-<<<<<<< HEAD
 .vscode/settings.json
-=======
-.vscode/settings.json
-raspberrypi/__pycache__/EspCollector.cpython-39.pyc
-raspberrypi/outputfile.txt
->>>>>>> 4e410663d863babcf2bbe20839df98f6fbeb517f
+
