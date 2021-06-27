@@ -3,6 +3,9 @@
 #include <ESP8266HTTPClient.h> // Include HTTP client library
 #include <ArduinoJson.h> // Include the JSON library
 #include "DHT.h" // Include the Temperature Sensor library
+#include <WiFiClient.h>
+#include "MQ135.h"
+
 
 // Below libraries are required for UDP Support
 #include "lwip/opt.h"
@@ -22,6 +25,11 @@
 #define SSDP_MULTICAST_TTL 2
 #define SSDP_BUFFER_SIZE 1064
 
+// Init the sensors accordingly
+bool isthereadhtsensor = true;
+bool isthereadustsensor = false;
+bool isthereamq135sensor = false;
+
 // Initializing the temperature sensor library
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -31,16 +39,19 @@ float temperatureC = 0;
 float temperatureF = 0;
 float heatindexF = 0;
 float heatindexC = 0;
-bool isthereadhtsensor = true;
 bool validdhtsensordata = false;
 
 // For the dust sensor
-const int measurePin = A0;
+const int DUSTmeasurePin = A0;
 float voMeasured = 0;
 float calcVoltage = 0;
 float dustDensity = 0;  
-bool isthereadustsensor = true;
 bool validdustsensordata = false;
+
+// For the MQ135 sensor
+const int MQ135measurePin = A0;
+float airquality_PPM = 0;
+bool validmq135sensordata = false;
 
 // For the Wifi connection & UDP, need to change this to 
 const char* host     = "espmon";
@@ -83,9 +94,12 @@ bool isproduction = false;
 void setup() {
 
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
-  dht.begin();
 
-  waitforsometime(2);
+  if(isthereadhtsensor) {
+    dht.begin();
+  }    
+
+  waitforsometime(5);
 
   if (!isproduction) Serial.println("DEBUG: Waking UP!!!");
   
@@ -233,6 +247,7 @@ void setup() {
                 
     Serial.println("INFO: Attempting to Send JSON input");
     HTTPClient  http;
+    WiFiClient wifiClient;
     String servername = locationval+"/hereisdata";              
     String httpRequestData = "";
 
@@ -256,7 +271,11 @@ void setup() {
       doc["dustsens"]["calcvo"] = calcVoltage;
       doc["dustsens"]["ddens"] = dustDensity;
     }
-
+    if(validmq135sensordata == true) {
+      doc["mq135sens"]["type"] = "MQ135";
+      doc["mq135sens"]["ppm"] = airquality_PPM;
+    }
+    
     int data_length = serializeJson(doc, httpRequestData);
 
     if (!isproduction) Serial.print("DEBUG: Server URL: ");
@@ -264,7 +283,7 @@ void setup() {
     if (!isproduction) Serial.println("DEBUG: Sending JSON");
     if (!isproduction) Serial.println(httpRequestData);             
       
-    http.begin(servername);
+    http.begin(wifiClient, servername);
     http.addHeader("Content-Type", "application/json");
                 
     // Send HTTP POST request
@@ -416,7 +435,7 @@ bool readdustsensors() {
   bool returnvalue = true;
   
   //read the dust sensor signal
-  voMeasured = analogRead(measurePin);
+  voMeasured = analogRead(DUSTmeasurePin);
   calcVoltage = voMeasured*(5.0/1024);
   dustDensity = 0.17*calcVoltage-0.1;
   
@@ -427,6 +446,27 @@ bool readdustsensors() {
   validdustsensordata = returnvalue;
 
   return returnvalue;
+}
+
+//Read the MQ135 gas sensor data
+bool readmq135sensor() {
+  bool returnvalue = true;
+
+  MQ135 gasSensor = MQ135(A0);
+  airquality_PPM = gasSensor.getPPM();
+  
+  validmq135sensordata = returnvalue;
+  
+  return returnvalue;
+}
+
+void printmq135sensordata () {
+  if(validmq135sensordata) {
+    Serial.println("INFO: MQ135 Gas Sensor");
+    Serial.print("Air Quality: ");
+    Serial.print(airquality_PPM);
+    Serial.println("  PPM");    
+  }
 }
 
 void analyzeBuffer(char * line_buffer) {
