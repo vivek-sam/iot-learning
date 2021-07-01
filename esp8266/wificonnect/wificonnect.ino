@@ -5,7 +5,14 @@
 #include "DHT.h" // Include the Temperature Sensor library
 #include <WiFiClient.h>
 #include "MQ135.h"
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
+//Libraries for the OLED Screen support
+#define SCREEN_WIDTH 128    // OLED display width, in pixels
+#define SCREEN_HEIGHT 64    // OLED display height, in pixels
+#define OLED_RESET -1       // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Below libraries are required for UDP Support
 #include "lwip/opt.h"
@@ -16,7 +23,7 @@
 #include "include/UdpContext.h"
 
 // For the Temperature 
-#define DHTPIN 4     // what digital pin the DHT22 is conected to
+#define DHTPIN 14     // what digital pin the DHT22 is conected to
 #define DHTTYPE DHT22   // there are multiple kinds of DHT sensors
 
 // For the SSDP support 
@@ -26,9 +33,13 @@
 #define SSDP_BUFFER_SIZE 1064
 
 // Init the sensors accordingly
+bool isthereadisplay = false;
 bool isthereadhtsensor = true;
 bool isthereadustsensor = false;
 bool isthereamq135sensor = false;
+
+//Initializing the Display
+bool displayinitialized = false;
 
 // Initializing the temperature sensor library
 DHT dht(DHTPIN, DHTTYPE);

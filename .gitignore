@@ -4,3 +4,5 @@ desktop.ini
 .vscode/launch.json
 .vscode/settings.json
 
+raspberrypi/outputfile.txt
+.gitignore
