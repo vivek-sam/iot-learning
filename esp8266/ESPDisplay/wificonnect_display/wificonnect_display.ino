@@ -5,14 +5,15 @@
 #include "DHT.h" // Include the Temperature Sensor library
 #include <WiFiClient.h>
 #include "MQ135.h"
-//#include <Adafruit_GFX.h>
-//#include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 //Libraries for the OLED Screen support
-//#define SCREEN_WIDTH 128    // OLED display width, in pixels
-//#define SCREEN_HEIGHT 64    // OLED display height, in pixels
+#define SCREEN_WIDTH 128    // OLED display width, in pixels
+#define SCREEN_HEIGHT 64    // OLED display height, in pixels
 //#define OLED_RESET -1       // Reset pin # (or -1 if sharing Arduino reset pin)
-//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+#define OLED_RESET D4       // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Below libraries are required for UDP Support
 #include "lwip/opt.h"
@@ -33,7 +34,7 @@
 #define SSDP_BUFFER_SIZE 1064
 
 // Init the sensors accordingly
-bool isthereadisplay = false;
+bool isthereadisplay = true;
 bool isthereadhtsensor = true;
 bool isthereadustsensor = false;
 bool isthereamq135sensor = false;
@@ -117,15 +118,15 @@ void setup() {
   if(isthereadisplay) {
     if (!isproduction) Serial.println("DEBUG: Initializing Display");
     if(!displayinitialized) {
-      //display.begin(SSD1306_SWITCHCAPVCC, 0x3C); //initialize with the I2C addr 0x3C (128x64)
-      //display.clearDisplay();
+      display.begin(SSD1306_SWITCHCAPVCC, 0x3C); //initialize with the I2C addr 0x3C (128x64)
+      display.clearDisplay();
       displayinitialized = true;   
-      //display.setCursor(0,0);  
-      //display.setTextSize(1);
-      //display.setTextColor(WHITE);
-      //display.println("Initializing...");
-    }    
-    delay(10);   
+      display.setCursor(0,0);  
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.println("Initializing...");
+      display.display();
+    }
   }
   waitforsometime(5);
   
@@ -137,7 +138,17 @@ void setup() {
   WiFi.hostname(host);
   if (!isproduction) Serial.printf("DEBUG: New hostname: %s\n", WiFi.hostname().c_str());
   
-  if(isthereadisplay && displayinitialized) {   
+  if(isthereadisplay && displayinitialized) {  
+    // First Set the Top Part 
+    // erase previous
+    display.clearDisplay();
+    display.setCursor(0,0);  
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.print("Connecting to ");   
+    display.print(ssid);
+    display.print("...");
+    display.display();
   }
   WiFi.begin(ssid, password);             // Connect to the network
   Serial.print("INFO: Connecting to ");
@@ -153,6 +164,12 @@ void setup() {
   if(isthereadustsensor) {
     if(!readdustsensors()) {
       Serial.print("WARNING: No Dust sensor data");
+    }
+  }
+
+  if(isthereamq135sensor) {
+    if(!readmq135sensor()) {
+      Serial.print("WARNING: No MQ135 sensor data");
     }
   }
 
@@ -172,18 +189,29 @@ void setup() {
     if (!isproduction) Serial.print(' ');
   }
   if (!isproduction) Serial.println("...");
-
+   
   // Still not connected, then only refresh the data for the display and go back to deep sleep, but only sleep for 60 seconds.
   if(WiFi.status() != WL_CONNECTED) {
     Serial.println("WARNING: No WiFi connection, only displaying the data");
 
+    if(isthereadisplay && displayinitialized) {  
+      // First Set the Top Part 
+      // erase previous
+      display.clearDisplay();
+      display.setCursor(0,0);  
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.print("No WIFI...");
+      display.display();   
+    }
+  
+    //Display in the oled before deep sleep.
     // We have all the sensor data, simply display it...
     printdhtsensordata();
     printdustsensordata();
-
-    //Display in the oled before deep sleep.
-    
-    deepsleepforsometime(60e6);
+    printmq135sensordata();
+     
+    deepsleepforsometime(600e6);
   }
   
   IPAddress local = WiFi.localIP();
@@ -195,8 +223,22 @@ void setup() {
   //wait for 3 seconds
   waitforsometime(3);
 
+  if(isthereadisplay && displayinitialized) {  
+    // First Set the Top Part 
+    // erase previous
+    display.clearDisplay();
+    display.setCursor(0,0);  
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.println("WiFi");   
+    display.display();      
+  }
 
-
+  // Print all the sensor data before trying to send...
+  printdhtsensordata();
+  printdustsensordata();
+  printmq135sensordata();
+    
   if (igmp_joingroup(local, mcast) != ERR_OK ) {
     Serial.println("WARNING: SSDP failed to join igmp group\n");
   } else {
@@ -343,7 +385,9 @@ void setup() {
 
   //5 Minute sleep
   //deepsleepforsometime(300e6);
-  deepsleepforsometime(30e6);
+
+  //30 Minute Sleep
+  deepsleepforsometime(1800e6);
   
 }
 
@@ -407,6 +451,18 @@ void printdhtsensordata() {
     Serial.print("*C, ");
     Serial.print(heatindexF);
     Serial.println("*F");
+
+    if(isthereadisplay && displayinitialized) {
+      //Display the temperature
+      display.setCursor(0,20);  //oled display
+      display.setTextSize(2);
+      display.setTextColor(WHITE);
+      display.print(temperatureC);
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.println(" C");
+      display.display();      
+    }
   }
 }
 
