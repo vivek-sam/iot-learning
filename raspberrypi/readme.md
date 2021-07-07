@@ -1,7 +1,4 @@
 Packages
-python -m pip install pyserial
-python -m pip install pyfirmata
+python -m pip install pyserial pyfirmata
 
-python -m pip install ssdpy
-python -m pip install Flask
-python -m pip install prometheus-flask-exporter
+python -m pip install ssdpy Flask prometheus-flask-exporter

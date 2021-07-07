@@ -1,3 +1,6 @@
+Dust Sensor
+https://www.mka.in/wp/air-quality-monitor-using-gp2y1010au0f-sensor-on-micropython-based-nodemcu/
+
 Writing to EPROM
 https://thekurks.net/blog/2017/11/6/esp8266-iot-eeprom-example
 

@@ -34,9 +34,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define SSDP_BUFFER_SIZE 1064
 
 // Init the sensors accordingly
-bool isthereadisplay = true;
+bool isthereadisplay = false;
 bool isthereadhtsensor = true;
-bool isthereadustsensor = false;
+bool isthereadustsensor = true;
 bool isthereamq135sensor = false;
 
 //Initializing the Display
@@ -521,8 +521,8 @@ bool readdustsensors() {
   
   //read the dust sensor signal
   voMeasured = analogRead(DUSTmeasurePin);
-  calcVoltage = voMeasured*(5.0/1024);
-  dustDensity = 0.17*calcVoltage-0.1;
+  calcVoltage = voMeasured*(3.3/1024);
+  dustDensity = 0.17 * calcVoltage - 0.1;
   
   if ( dustDensity < 0) {
     dustDensity = 0.00;
