@@ -1,10 +1,18 @@
 import requests
 from datetime import datetime
 from flask import Flask, jsonify, request
-from prometheus_flask_exporter import PrometheusMetrics
+# from prometheus_flask_exporter import PrometheusMetrics
+from influxdb_client import InfluxDBClient, Point, WritePrecision
+from influxdb_client.client.write_api import SYNCHRONOUS
+
+token = "K7AhuPaQQDTFPp5BibprS_ZwpQMBmbcQcrIbaSvyT2b7XKpf_WlfsEemT2ES2NSrh5IF53ZtJuuibC8MFZoCyQ=="
+org = "home_iot_project"
+bucket = "iot"
+
+client = InfluxDBClient(url="http://localhost:8086", token=token)
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)
+# metrics = PrometheusMetrics(app)
 
 @app.route('/')
 def index():
@@ -24,31 +32,65 @@ def add():
     f.write("\n")
     f.close()
 
-    # First check if its a valid request
-    api_key = data['api_key']
-    if(api_key == ""):
-      mac_address = data['macadd']
-      
-      if(mac_address != ""):
-        # collect other data that has come
-        # 
-        temphumid = data['temphumid']
-        if(temphumid != ""):
-          tempC = data['temphumid']['tempc']
-          humidity = data['temphumid']['humidity']
-          heatindex = data['temphumid']['heatic']
+    write_api = client.write_api(write_options=SYNCHRONOUS)
 
-          met_temp = "temperature_" + mac_address + "_C"
-          tempinfo = metrics.info(met_temp,'Temperature in C')
-          tempinfo.set(tempC)
-          
-          met_humi = "humidity_" + mac_address + "_info"
-          humidinfo = metrics.info(met_humi,'Humidity')
-          humidinfo.set(humidity)
-          
-          met_hinde = "heatindex_" + mac_address + "_C"
-          heatindexinfo = metrics.info(met_hinde,'Heat Index in C')
-          heatindexinfo.set(heatindex)                
+    # write_api.write(bucket, org, json_object)
+    mac_address = None
+    temperaturesensor_data = None
+    tempT = None
+    tempC = None
+    tempF = None
+    tempH = None
+    tempHC = None
+    tempHF = None
+
+    dustsensor_data = None
+    gassensor_data = None
+
+    # First collect all the data that we want to put
+    try:
+      mac_address = data['macadd']
+    except ValueError:
+      app.logger.error('error getting MAC Address')
+
+    try:
+      temperaturesensor_data = data['temphumid']
+    except ValueError:
+      app.logger.info('No Temperature Data')
+
+    if(mac_address != None):
+      if(temperaturesensor_data != None):
+        try:
+          tempT = data['temphumid']['type']
+          tempC = data['temphumid']['tempc']
+          tempF = data['temphumid']['tempf']
+          tempH = data['temphumid']['humidity']
+          tempHC = data['temphumid']['heatic']
+          tempHF = data['temphumid']['heatif']
+        except ValueError:
+          app.logger.info('No Temperature Data values') 
+
+    currenttime = datetime.utcnow()
+    try: 
+      if (tempT != None):
+        write_api.write(bucket, org, Point("temperature").tag("host", mac_address).field("tsType", tempT).time(currenttime, WritePrecision.NS))
+
+      if (tempC != None):
+        write_api.write(bucket, org, Point("temperature").tag("host", mac_address).field("tsTempC", float(tempC)).time(currenttime, WritePrecision.NS))
+
+      if (tempF != None):
+        write_api.write(bucket, org, Point("temperature").tag("host", mac_address).field("tsTempF", float(tempF)).time(currenttime, WritePrecision.NS))
+
+      if (tempH != None):
+        write_api.write(bucket, org, Point("temperature").tag("host", mac_address).field("tsHumi", float(tempH)).time(currenttime, WritePrecision.NS))
+
+      if (tempHC != None):
+        write_api.write(bucket, org, Point("temperature").tag("host", mac_address).field("tsHtC", float(tempHC)).time(currenttime, WritePrecision.NS))
+
+      if (tempHF != None):
+        write_api.write(bucket, org, Point("temperature").tag("host", mac_address).field("tsHtF", float(tempHF)).time(currenttime, WritePrecision.NS))
+    except ValueError:
+      app.logger.error('Problem writing to Database') 
 
     # Create a success json to reply
     responseset = {"Status": "Ok"}

@@ -66,7 +66,7 @@ local_ip_address = s.getsockname()[0]
 location = get_location(local_ip_address,flash_port)
 
 t2 = _thread.start_new_thread(run_apiserver,("API-Server", ))
-time.sleep(10)
+time.sleep(7)
 # creating thread
 t1 = _thread.start_new_thread(run_ssdpserver,("SSDP-Server",location, ))
    
