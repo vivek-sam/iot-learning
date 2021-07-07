@@ -37,11 +37,17 @@ def add():
           tempC = data['temphumid']['tempc']
           humidity = data['temphumid']['humidity']
           heatindex = data['temphumid']['heatic']
-          tempinfo = metrics.info('temperature_info','Temperature in C',mac=mac_address)
+
+          met_temp = "temperature_" + mac_address + "_C"
+          tempinfo = metrics.info(met_temp,'Temperature in C')
           tempinfo.set(tempC)
-          humidinfo = metrics.info('humidity_info','Humidity',mac=mac_address)
+          
+          met_humi = "humidity_" + mac_address + "_info"
+          humidinfo = metrics.info(met_humi,'Humidity')
           humidinfo.set(humidity)
-          heatindexinfo = metrics.info('heatindex_info','Heat Index in C',mac=mac_address)
+          
+          met_hinde = "heatindex_" + mac_address + "_C"
+          heatindexinfo = metrics.info(met_hinde,'Heat Index in C')
           heatindexinfo.set(heatindex)                
 
     # Create a success json to reply
