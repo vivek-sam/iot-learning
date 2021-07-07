@@ -25,7 +25,7 @@ def add():
     f.close()
 
     # First check if its a valid request
-    api_key = data['MY_API_KEY']
+    api_key = data['api_key']
     if(api_key == ""):
       mac_address = data['macadd']
       
