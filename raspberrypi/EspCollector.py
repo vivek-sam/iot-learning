@@ -3,7 +3,6 @@ from datetime import datetime
 from flask import Flask, jsonify, request
 from prometheus_flask_exporter import PrometheusMetrics
 
-
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
 
@@ -25,9 +24,25 @@ def add():
     f.write("\n")
     f.close()
 
-    # Ouptut the object and 
-    print(json_object)
-
+    # First check if its a valid request
+    api_key = data['MY_API_KEY']
+    if(api_key == ""):
+      mac_address = data['macadd']
+      
+      if(mac_address != ""):
+        # collect other data that has come
+        # 
+        temphumid = data['temphumid']
+        if(temphumid != ""):
+          tempC = data['temphumid']['tempc']
+          humidity = data['temphumid']['humidity']
+          heatindex = data['temphumid']['heatic']
+          tempinfo = metrics.info('temperature_info','Temperature in C',mac=mac_address)
+          tempinfo.set(tempC)
+          humidinfo = metrics.info('humidity_info','Humidity',mac=mac_address)
+          humidinfo.set(humidity)
+          heatindexinfo = metrics.info('heatindex_info','Heat Index in C',mac=mac_address)
+          heatindexinfo.set(heatindex)                
 
     # Create a success json to reply
     responseset = {"Status": "Ok"}
