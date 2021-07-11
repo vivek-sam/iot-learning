@@ -1,1752 +1,2199 @@
 {
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": "-- Grafana --",
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
-    },
-    "editable": true,
-    "gnetId": null,
-    "graphTooltip": 0,
-    "id": 2,
-    "links": [],
-    "panels": [
+  "annotations": {
+    "list": [
       {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "#EAB839",
-                  "value": 29
-                },
-                {
-                  "color": "red",
-                  "value": 31
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 0,
-          "y": 0
-        },
-        "id": 2,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Vivek's Room (First Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHtC 9C:9C:1F:47:14:B7",
-                  "tsTempC 9C:9C:1F:47:14:B7"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 3,
-          "x": 7,
-          "y": 0
-        },
-        "id": 12,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Vivek's Room (First Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi 9C:9C:1F:47:14:B7"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 10,
-          "y": 0
-        },
-        "id": 6,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Vivek's Room (First Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi 9C:9C:1F:47:14:B7",
-                  "tsHtF 9C:9C:1F:47:14:B7",
-                  "tsTempF 9C:9C:1F:47:14:B7"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "timeseries"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 10,
-          "w": 7,
-          "x": 17,
-          "y": 0
-        },
-        "id": 10,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Temperature",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsTempC 9C:9C:1F:47:14:B7",
-                  "tsTempC 9C:9C:1F:47:4F:81",
-                  "tsTempC C4:5B:BE:54:D1:52",
-                  "tsTempC E8:DB:84:98:C0:E6"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC 9C:9C:1F:47:4F:81.*)",
-              "renamePattern": "Girls Room (Ground Floor)"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC 9C:9C:1F:47:14:B7.*)",
-              "renamePattern": "Vivek's Room (First Floor)"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC C4:5B:BE:54:D1:52.*)",
-              "renamePattern": "Bed Room (Second Floor)"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC E8:DB:84:98:C0:E6.*)",
-              "renamePattern": "Living Room (First Floor)"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "timeseries"
-      },
-      {
-        "datasource": null,
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "#EAB839",
-                  "value": 29
-                },
-                {
-                  "color": "red",
-                  "value": 31
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 0,
-          "y": 5
-        },
-        "id": 3,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Living Room (First Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHtC E8:DB:84:98:C0:E6",
-                  "tsTempC E8:DB:84:98:C0:E6"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 3,
-          "x": 7,
-          "y": 5
-        },
-        "id": 13,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Living Room (First Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi E8:DB:84:98:C0:E6"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 10,
-          "y": 5
-        },
-        "id": 7,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Living Room (First Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi E8:DB:84:98:C0:E6",
-                  "tsHtF E8:DB:84:98:C0:E6",
-                  "tsTempF E8:DB:84:98:C0:E6"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "type": "timeseries"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "#EAB839",
-                  "value": 29
-                },
-                {
-                  "color": "red",
-                  "value": 31
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 0,
-          "y": 10
-        },
-        "id": 5,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Girls's Room (Ground Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHtC 9C:9C:1F:47:4F:81",
-                  "tsTempC 9C:9C:1F:47:4F:81"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 3,
-          "x": 7,
-          "y": 10
-        },
-        "id": 14,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Girls's Room (Ground Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi 9C:9C:1F:47:4F:81"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 10,
-          "y": 10
-        },
-        "id": 8,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Girls's Room (Ground Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi 9C:9C:1F:47:4F:81",
-                  "tsHtF 9C:9C:1F:47:4F:81",
-                  "tsTempF 9C:9C:1F:47:4F:81"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "timeseries"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 10,
-          "w": 7,
-          "x": 17,
-          "y": 10
-        },
-        "id": 11,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Humidity",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi 9C:9C:1F:47:14:B7",
-                  "tsHumi 9C:9C:1F:47:4F:81",
-                  "tsHumi C4:5B:BE:54:D1:52",
-                  "tsHumi E8:DB:84:98:C0:E6"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi 9C:9C:1F:47:4F:81.*)",
-              "renamePattern": "Girls Room (Ground Floor)"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi 9C:9C:1F:47:14:B7.*)",
-              "renamePattern": "Vivek's Room (First Floor)"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi C4:5B:BE:54:D1:52.*)",
-              "renamePattern": "Bed Room (Second Floor)"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi E8:DB:84:98:C0:E6.*)",
-              "renamePattern": "Living Room (First Floor)"
-            }
-          }
-        ],
-        "transparent": true,
-        "type": "timeseries"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "#EAB839",
-                  "value": 29
-                },
-                {
-                  "color": "red",
-                  "value": 31
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 0,
-          "y": 15
-        },
-        "id": 4,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Bed Room (Second Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHtC C4:5B:BE:54:D1:52",
-                  "tsTempC C4:5B:BE:54:D1:52"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 3,
-          "x": 7,
-          "y": 15
-        },
-        "id": 15,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
-          "text": {}
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Bed Room (Second Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi C4:5B:BE:54:D1:52"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "type": "gauge"
-      },
-      {
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 7,
-          "x": 10,
-          "y": 15
-        },
-        "id": 9,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
-        },
-        "pluginVersion": "8.0.3",
-        "targets": [
-          {
-            "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-            "refId": "A"
-          },
-          {
-            "hide": false,
-            "refId": "B"
-          }
-        ],
-        "title": "Bed Room (Second Floor)",
-        "transformations": [
-          {
-            "id": "filterFieldsByName",
-            "options": {
-              "include": {
-                "names": [
-                  "_time",
-                  "tsHumi C4:5B:BE:54:D1:52",
-                  "tsTempF C4:5B:BE:54:D1:52",
-                  "tsHtF C4:5B:BE:54:D1:52"
-                ]
-              }
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtC.*)",
-              "renamePattern": "Heat Index C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHtF.*)",
-              "renamePattern": "Heat Index F"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsHumi.*)",
-              "renamePattern": "Humidity"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempC.*)",
-              "renamePattern": "Temp C"
-            }
-          },
-          {
-            "id": "renameByRegex",
-            "options": {
-              "regex": "(tsTempF.*)",
-              "renamePattern": "Temp F"
-            }
-          }
-        ],
-        "type": "timeseries"
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
-    ],
-    "refresh": "",
-    "schemaVersion": 30,
-    "style": "dark",
-    "tags": [],
-    "templating": {
-      "list": []
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsTempC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Vivek's Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsTempC 9C:9C:1F:47:14:B7"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
     },
-    "time": {
-      "from": "now-6h",
-      "to": "now"
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 16,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Vivek's Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtC 9C:9C:1F:47:14:B7"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
     },
-    "timepicker": {},
-    "timezone": "",
-    "title": "Home Temperature",
-    "uid": "-D_TJZi7z",
-    "version": 24
-  }
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHumi\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Vivek's Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHumi 9C:9C:1F:47:14:B7"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 9,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsTempF\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Vivek's Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtF 9C:9C:1F:47:14:B7",
+                "tsTempF 9C:9C:1F:47:14:B7"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 9,
+        "x": 15,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsTempC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Temperature",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsTempC 9C:9C:1F:47:14:B7",
+                "tsTempC 9C:9C:1F:47:4F:81",
+                "tsTempC C4:5B:BE:54:D1:52",
+                "tsTempC E8:DB:84:98:C0:E6"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC 9C:9C:1F:47:4F:81.*)",
+            "renamePattern": "Girls Room (Ground Floor)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC 9C:9C:1F:47:14:B7.*)",
+            "renamePattern": "Vivek's Room (First Floor)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC C4:5B:BE:54:D1:52.*)",
+            "renamePattern": "Bed Room (Second Floor)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC E8:DB:84:98:C0:E6.*)",
+            "renamePattern": "Living Room (First Floor)"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 5
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsTempC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Living Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsTempC E8:DB:84:98:C0:E6"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 5
+      },
+      "id": 17,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Living Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtC E8:DB:84:98:C0:E6"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 5
+      },
+      "id": 13,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHumi\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Living Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHumi E8:DB:84:98:C0:E6"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 9,
+        "y": 5
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsTempF\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Living Room (First Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtF E8:DB:84:98:C0:E6",
+                "tsTempF E8:DB:84:98:C0:E6"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 10
+      },
+      "id": 5,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:4F:81\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsTempC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Girls's Room (Ground Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsTempC 9C:9C:1F:47:4F:81"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 10
+      },
+      "id": 18,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:4F:81\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Girls's Room (Ground Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtC 9C:9C:1F:47:4F:81"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 10
+      },
+      "id": 14,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:4F:81\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHumi\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Girls's Room (Ground Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHumi 9C:9C:1F:47:4F:81"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 9,
+        "y": 10
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:4F:81\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsTempF\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Girls's Room (Ground Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtF 9C:9C:1F:47:4F:81",
+                "tsTempF 9C:9C:1F:47:4F:81"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 9,
+        "x": 15,
+        "y": 10
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHumi\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Humidity",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHumi 9C:9C:1F:47:14:B7",
+                "tsHumi 9C:9C:1F:47:4F:81",
+                "tsHumi C4:5B:BE:54:D1:52",
+                "tsHumi E8:DB:84:98:C0:E6"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi 9C:9C:1F:47:4F:81.*)",
+            "renamePattern": "Girls Room (Ground Floor)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi 9C:9C:1F:47:14:B7.*)",
+            "renamePattern": "Vivek's Room (First Floor)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi C4:5B:BE:54:D1:52.*)",
+            "renamePattern": "Bed Room (Second Floor)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi E8:DB:84:98:C0:E6.*)",
+            "renamePattern": "Living Room (First Floor)"
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 15
+      },
+      "id": 4,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"C4:5B:BE:54:D1:52\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Bed Room (Second Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsTempC C4:5B:BE:54:D1:52"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 29
+              },
+              {
+                "color": "red",
+                "value": 31
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 15
+      },
+      "id": 19,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"C4:5B:BE:54:D1:52\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Bed Room (Second Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtC C4:5B:BE:54:D1:52"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 15
+      },
+      "id": 15,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"9C:9C:1F:47:14:B7\" or r[\"host\"] == \"9C:9C:1F:47:4F:81\" or r[\"host\"] == \"C4:5B:BE:54:D1:52\" or r[\"host\"] == \"E8:DB:84:98:C0:E6\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtC\" or r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsHumi\" or r[\"_field\"] == \"tsTempC\" or r[\"_field\"] == \"tsTempF\" or r[\"_field\"] == \"tsType\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Bed Room (Second Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHumi C4:5B:BE:54:D1:52"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 9,
+        "y": 15
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: \"iot\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"host\"] == \"C4:5B:BE:54:D1:52\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tsHtF\" or r[\"_field\"] == \"tsTempF\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "title": "Bed Room (Second Floor)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "_time",
+                "tsHtF C4:5B:BE:54:D1:52",
+                "tsTempF C4:5B:BE:54:D1:52"
+              ]
+            }
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtC.*)",
+            "renamePattern": "Heat Index C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHtF.*)",
+            "renamePattern": "Heat Index F"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsHumi.*)",
+            "renamePattern": "Humidity"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempC.*)",
+            "renamePattern": "Temp C"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(tsTempF.*)",
+            "renamePattern": "Temp F"
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30m",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Home Temperature",
+  "uid": "rP1aR2i7k",
+  "version": 12
+}
