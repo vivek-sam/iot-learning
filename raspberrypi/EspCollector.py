@@ -5,8 +5,8 @@ from flask import Flask, jsonify, request
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-token = "K7AhuPaQQDTFPp5BibprS_ZwpQMBmbcQcrIbaSvyT2b7XKpf_WlfsEemT2ES2NSrh5IF53ZtJuuibC8MFZoCyQ=="
-org = "home_iot_project"
+token = "KhaY9oOUhOSI0elj6O4Nad4mvB8TsdiLWng5KaM43ZIftyj6nyr1hJURcOrhF_E-EyiQq6W0tTNxDAZI05LqAg=="
+org = "vivek.home.iot"
 bucket = "iot"
 
 client = InfluxDBClient(url="http://localhost:8086", token=token)
